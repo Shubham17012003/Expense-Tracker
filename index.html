@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Khata</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Khata">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2a3f9e">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efe6;--card:#fffdf8;--ink:#1d2540;--mute:#6c7186;--line:#d9dff0;--margin:#d4503f;--acc:#2a3f9e;--accfg:#fff;--shadow:0 1px 0 #0001;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141829;--card:#1c2138;--ink:#e8eaf6;--mute:#9096b3;--line:#2c3354;--margin:#ef7d6d;--acc:#8fa2ff;--accfg:#10142a}}
+:root[data-theme="dark"]{--bg:#141829;--card:#1c2138;--ink:#e8eaf6;--mute:#9096b3;--line:#2c3354;--margin:#ef7d6d;--acc:#8fa2ff;--accfg:#10142a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:28px;font-weight:800;margin:0;letter-spacing:-.02em}
+.month{display:flex;align-items:center;gap:6px}
+.month button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;cursor:pointer}
+.month b{min-width:112px;text-align:center;font-weight:600}
+.total{margin:22px 0 6px}
+.total small{color:var(--mute);font-size:14px}
+.total .n{font-size:clamp(44px,13vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.total .n i{font-style:normal;color:var(--margin)}
+.sub{color:var(--mute);font-size:14px}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);position:relative;margin-top:18px;padding:16px 16px 16px 30px;
+background-image:repeating-linear-gradient(transparent 0 31px,var(--line) 31px 32px)}
+.sheet.plain{background-image:none}
+.sheet:before{content:"";position:absolute;left:18px;top:0;bottom:0;width:2px;background:var(--margin);opacity:.7}
+h2{font-size:17px;margin:0 0 12px;font-weight:600}
+form{display:grid;gap:10px}
+.row{display:flex;gap:8px}
+input[type=number],input[type=text],input[type=date]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 12px;width:100%;min-width:0}
+input:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+#amt{font-size:22px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 11px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--acc);color:var(--accfg);border-color:var(--acc)}
+.add{font:inherit;font-weight:600;font-size:16px;background:var(--acc);color:var(--accfg);border:0;border-radius:8px;padding:12px;cursor:pointer}
+.hint{font-size:13px;color:var(--mute);margin:0}
+.bar{margin:0 0 12px}
+.bar .t{display:flex;justify-content:space-between;font-size:15px;margin-bottom:4px}
+.bar .t span:last-child{font-variant-numeric:tabular-nums}
+.bar .track{height:10px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;background:var(--acc);border-radius:6px;transition:width .4s}
+.item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item .m{flex:1;min-width:0}
+.item .m b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .m span{font-size:13px;color:var(--mute)}
+.item .a{font-weight:600;font-variant-numeric:tabular-nums}
+.item button{border:0;background:none;color:var(--mute);font-size:20px;cursor:pointer;padding:4px 8px}
+.item button:hover{color:var(--margin)}
+.empty{color:var(--mute);margin:0;font-size:15px}
+.tools{display:flex;gap:8px;margin-top:14px}
+.tools button{font:inherit;font-size:14px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Khata</h1>
+  <div class="month"><button id="prev" aria-label="Previous month">‹</button><b id="mlabel"></b><button id="next" aria-label="Next month">›</button></div>
+</header>
+
+<section class="total">
+  <small>Spent this month</small>
+  <div class="n" id="total"></div>
+  <div class="sub" id="meta"></div>
+</section>
+
+<section class="sheet">
+  <h2>Note an expense</h2>
+  <form id="f" autocomplete="off">
+    <input id="amt" type="number" inputmode="decimal" min="0" step="any" placeholder="₹ Amount, e.g. 1000" required aria-label="Amount in rupees">
+    <input id="note" type="text" placeholder="What for? e.g. petrol" aria-label="Note">
+    <div class="chips" id="chips" role="group" aria-label="Category"></div>
+    <div class="row"><input id="date" type="date" aria-label="Date"></div>
+    <p class="hint" id="hint">Pick a category, or leave it and I’ll guess from your note.</p>
+    <button class="add" type="submit">Add expense</button>
+  </form>
+</section>
+
+<section class="sheet plain">
+  <h2>Where it went</h2>
+  <div id="break"></div>
+</section>
+
+<section class="sheet plain">
+  <h2>All entries</h2>
+  <div id="list"></div>
+  <div class="tools"><button id="csv">Download CSV</button><button id="imp">Import CSV</button><input id="impf" type="file" accept=".csv,text/csv" hidden></div>
+</section>
+</main>
+
+<script>
+var CATS=[
+ ['Petrol','petrol|fuel|diesel|cng|gas'],['Food','food|lunch|dinner|breakfast|chai|tea|coffee|zomato|swiggy|restaurant|snack'],
+ ['Groceries','grocer|vegetable|fruit|milk|kirana|bigbasket|blinkit|zepto'],['Rent','rent'],['Bills','bill|electric|wifi|internet|recharge|phone|emi|insurance'],
+ ['Travel','uber|ola|auto|taxi|train|metro|bus|flight|ticket|toll'],['Shopping','shop|cloth|amazon|flipkart|myntra|shoes'],
+ ['Gear','lens|camera|tripod|memory|battery|filter'],['Health','doctor|medicine|pharmacy|hospital|gym'],['Fun','movie|game|netflix|party|trip'],['Other','']
+];
+var KEY='khata.entries.v1',entries=[],sel='',cur=new Date();cur.setDate(1);
+try{entries=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){entries=[]}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(entries))}catch(e){}}
+var $=function(i){return document.getElementById(i)};
+var inr=function(n){return '₹'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:2})};
+function iso(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(x<10?'0':'')+x}
+function guess(t){t=t.toLowerCase();for(var i=0;i<CATS.length;i++){if(CATS[i][1]&&new RegExp(CATS[i][1]).test(t))return CATS[i][0]}return 'Other'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function drawChips(){
+  $('chips').innerHTML=CATS.map(function(c){return '<button type="button" class="chip" aria-pressed="'+(sel===c[0])+'" data-c="'+c[0]+'">'+c[0]+'</button>'}).join('');
+}
+$('chips').onclick=function(e){var c=e.target.getAttribute('data-c');if(!c)return;sel=(sel===c?'':c);drawChips()};
+
+function render(){
+  var key=cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2);
+  $('mlabel').textContent=cur.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  var list=entries.filter(function(e){return e.date.slice(0,7)===key}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:b.id-a.id});
+  var tot=list.reduce(function(s,e){return s+e.amt},0);
+  $('total').innerHTML='<i>₹</i>'+tot.toLocaleString('en-IN',{maximumFractionDigits:2});
+  $('meta').textContent=list.length?list.length+(list.length>1?' entries':' entry')+' · average '+inr(tot/new Set(list.map(function(e){return e.date})).size)+' on days you spent':'Nothing noted yet this month';
+  var by={};list.forEach(function(e){by[e.cat]=(by[e.cat]||0)+e.amt});
+  var rows=Object.keys(by).sort(function(a,b){return by[b]-by[a]});
+  $('break').innerHTML=rows.length?rows.map(function(c){var p=by[c]/tot*100;
+    return '<div class="bar"><div class="t"><span>'+esc(c)+' <small class="sub">'+Math.round(p)+'%</small></span><span>'+inr(by[c])+'</span></div><div class="track"><div class="fill" style="width:'+p+'%"></div></div></div>'}).join(''):'<p class="empty">Add your first expense above to see the split by category.</p>';
+  $('list').innerHTML=list.length?list.map(function(e){
+    var d=new Date(e.date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    return '<div class="item"><div class="m"><b>'+esc(e.note||e.cat)+'</b><span>'+esc(e.cat)+' · '+d+'</span></div><div class="a">'+inr(e.amt)+'</div><button data-d="'+e.id+'" aria-label="Delete entry">×</button></div>'}).join(''):'<p class="empty">No entries for this month.</p>';
+}
+$('list').onclick=function(e){var id=e.target.getAttribute('data-d');if(!id)return;entries=entries.filter(function(x){return String(x.id)!==id});save();render()};
+$('prev').onclick=function(){cur.setMonth(cur.getMonth()-1);render()};
+$('next').onclick=function(){cur.setMonth(cur.getMonth()+1);render()};
+$('note').oninput=function(){if(!sel&&this.value){$('hint').textContent='Will be saved under: '+guess(this.value)}else if(!sel){$('hint').textContent='Pick a category, or leave it and I’ll guess from your note.'}};
+$('f').onsubmit=function(ev){
+  ev.preventDefault();
+  var a=parseFloat($('amt').value);if(!(a>0))return;
+  var note=$('note').value.trim(),d=$('date').value||iso(new Date());
+  entries.push({id:Date.now(),amt:a,note:note,cat:sel||guess(note),date:d});
+  save();
+  $('amt').value='';$('note').value='';sel='';drawChips();
+  $('hint').textContent='Added. Keep going.';
+  var m=new Date(d+'T00:00:00');cur=new Date(m.getFullYear(),m.getMonth(),1);
+  render();$('amt').focus();
+};
+$('csv').onclick=function(){
+  var rows=['Date,Category,Note,Amount'].concat(entries.slice().sort(function(a,b){return a.date<b.date?-1:1}).map(function(e){return [e.date,e.cat,'"'+(e.note||'').replace(/"/g,'""')+'"',e.amt].join(',')}));
+  var t=rows.join('\n');
+  try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='khata.csv';a.click()}catch(e){}
+};
+
+$('imp').onclick=function(){$('impf').click()};
+$('impf').onchange=function(){
+  var f=this.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){
+    var n=0;String(r.result).split(/\r?\n/).slice(1).forEach(function(l){
+      var m=l.match(/^(\d{4}-\d{2}-\d{2}),([^,]*),("(?:[^"]|"")*"|[^,]*),([\d.]+)$/);
+      if(!m)return;var note=m[3].replace(/^"|"$/g,'').replace(/""/g,'"');
+      var dup=entries.some(function(e){return e.date===m[1]&&e.cat===m[2]&&e.note===note&&e.amt===parseFloat(m[4])});
+      if(dup)return;entries.push({id:Date.now()+n,amt:parseFloat(m[4]),note:note,cat:m[2]||'Other',date:m[1]});n++});
+    save();render();alert(n+' entries imported');
+  };r.readAsText(f);this.value='';
+};
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+$('date').value=iso(new Date());
+drawChips();render();
+</script>
+</body>
+</html>
